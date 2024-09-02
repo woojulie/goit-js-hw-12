@@ -1,18 +1,248 @@
-/**
-  |============================
-  | include css partials with
-  | default @import url()
-  |============================
-*/
-/* Common styles */
-@import url('./reset.css');
-@import url('./base.css');
-@import url('./container.css');
-@import url('./animations.css');
+@import url(./loader.css);
 
-/* Sections style */
-@import url('./header.css');
-@import url('./vite-promo.css');
-@import url('./badges.css');
-@import url('./back-link.css');
-@import url('./footer.css');
+/* ========   COMMON   ========= */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    line-height: 1.5;
+    color: #808080;
+    font-family: 'Montserrat', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+ul,
+ol {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style-type: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: 100%;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* ===========  GALLERY  =========== */
+.container {
+    width: 1200px;
+    padding: 36px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-form {
+    width: 371px;
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 32px;
+}
+
+.search-input {
+    width: 272px;
+    height: 40px;
+    font-family: inherit;
+
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    padding: 8px 16px;
+    border: 1px solid #808080;
+    border-radius: 4px;
+    outline: none;
+}
+
+.search-input:hover {
+    border-color: #000000;
+}
+
+.search-input:focus {
+    border-color: #4e75ff;
+}
+
+.search-button {
+    width: 91px;
+    border-radius: 8px;
+    padding: 8px 16px;
+    background: #4e75ff;
+    border: none;
+    font-family: inherit;
+
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: #fff;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background: #6c8cff;
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 1128px;
+    margin: 50px auto 0 auto;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none;
+}
+
+.gallery-item {
+    
+    padding: 10px;
+    border: 1px solid #808080;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.load-more-btn {
+    min-width: 91px;
+    border-radius: 8px;
+    padding: 8px 16px;
+    background: #4e75ff;
+    border: none;
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    color: #fff;
+    cursor: pointer;
+    margin: 0 auto 30px auto;
+    display: block;
+}
+
+.load-more-btn.is-hidden {
+    visibility: hidden;
+    display: none;
+}
+
+.simple-lightbox {
+    background-color: rgba(46, 47, 66, 0.8);
+}
+
+.style-caption {
+    font-weight: bold;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 10px;
+    text-align: center;
+}
+
+/* ===========  iziToast  =========== */
+
+.iziToast-wrapper-topRight {
+    padding: 36px;
+}
+
+.iziToast {
+    border-radius: 4px;
+    width: 432px;
+    background: #ef4040;
+    padding: 20px 58px 19px 20px;
+    margin: 0;
+    font-family: inherit;
+}
+
+.iziToast>.iziToast-progressbar {
+    background-color: #ffbebe;
+}
+
+.iziToast>.iziToast-progressbar>div {
+    background-color: #b51b1b;
+}
+
+.iziToast>.iziToast-body {
+    margin: 0;
+}
+
+.iziToast>.iziToast-body .iziToast-texts {
+    margin: 0 0 0 10px;
+}
+
+.iziToast>.iziToast-body .iziToast-message {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 0.03em;
+    color: #fafafb;
+}
+
+.iziToast>.iziToast-close {
+    background: url('../../src/img/x-close-btn.svg') no-repeat 50% 50%;
+    background-size: 16px;
+    width: 52px;
+    opacity: 1;
+}
+
+.iziToast>.iziToast-close:hover {
+    background-size: 20px;
+}
+
+/* ===========  LOADER  =========== */
+.loader {
+    width: 48px;
+    height: 48px;
+    margin: 40px auto 0 auto;
+    border-radius: 50%;
+    display: block;
+    border-top: 4px solid blue;
+    border-right: 4px solid transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+.loader::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border-left: 4px solid yellow;
+    border-bottom: 4px solid transparent;
+    animation: rotation 0.5s linear infinite reverse;
+}
+
+.loader.is-hidden {
+    display: none;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
