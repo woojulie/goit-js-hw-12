@@ -5,70 +5,71 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-
-const form = document.querySelector('#search-form');
-const gallery = document.querySelector('.gallery');
-const loadMoreBtn = document.querySelector('.load-more-btn');
 let query = '';
 let page = 1;
 let totalHits = 0;
-let lightbox;
+
+const form = document.querySelector('#search-form');
+const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('#load-more-btn');
+const loader = document.querySelector('.loader');
+
+const lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 });
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
+  gallery.innerHTML = '';
+  loadMoreBtn.classList.add('is-hidden');
+  loader.classList.remove('is-hidden');
+  
   query = event.currentTarget.elements.user_query.value.trim();
-  if (query === '') {
-    iziToast.error({ title: 'Error', message: 'Please enter a search query' });
-    return;
-  }
-
   page = 1;
-  gallery.innerHTML = ''; 
+
   try {
     const data = await fetchImages(query, page);
     totalHits = data.totalHits;
-
-    if (data.hits.length === 0) {
-      iziToast.warning({ title: 'No results', message: 'Sorry, there are no images matching your search query.' });
-      loadMoreBtn.classList.add('is-hidden');
-      return;
-    }
-
+    
     renderImages(data.hits);
-    lightbox = new SimpleLightbox('.gallery a');
     lightbox.refresh();
-    loadMoreBtn.classList.remove('is-hidden');
+    
+    if (data.totalHits > 15) {
+      loadMoreBtn.classList.remove('is-hidden');
+    }
   } catch (error) {
-    iziToast.error({ title: 'Error', message: error.message });
+    console.error('Error fetching images:', error);
+  } finally {
+    loader.classList.add('is-hidden');
   }
 });
 
 loadMoreBtn.addEventListener('click', async () => {
   page += 1;
-
+  
   try {
     const data = await fetchImages(query, page);
-
-    if (data.hits.length < totalHits) {
-      iziToast.info({
-            title: 'End of results',
-            message: "You've reached the end of search results.",
-            position: "topCenter",
-            title: "Info",
-            timeout: 4000, });
-      loadMoreBtn.classList.add('is-hidden');
-      return;
-    }
-
     renderImages(data.hits);
     lightbox.refresh();
-
-    const { height: cardHeight } = gallery.firstElementChild.getBoundingClientRect();
-    window.scrollBy({
-      top: cardHeight * 2,
-      behavior: 'smooth',
-    });
+    
+    const loadedImagesCount = document.querySelectorAll('.gallery-item').length;
+    if (loadedImagesCount >= 15) {
+      loadMoreBtn.classList.add('is-hidden');
+      iziToast.info({ title: 'End of results', message: "We're sorry, but you've reached the end of search results." });
+    }
   } catch (error) {
-    iziToast.error({ title: 'Error', message: error.message });
+    console.error('Error loading more images:', error);
   }
 });
+
+function createImages(images) {
+  const markup = images
+    .map(
+      ({ webformatURL, largeImageURL, tags }) => `
+        <li class="gallery-item">
+          <a href="${largeImageURL}">
+            <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+          </a>
+        </li>`
+    )
+    .join('');
+  gallery.insertAdjacentHTML('beforeend', markup);
+}
