@@ -49,27 +49,13 @@ loadMoreBtn.addEventListener('click', async () => {
   try {
     const data = await fetchImages(query, page);
 
-    if (data.hits.length === 0 || page * 15 >= totalHits) {
-      iziToast.info({ title: 'End of results', message: "We're sorry, but you've reached the end of search results." });
-      loadMoreBtn.classList.add('is-hidden');
-      return;
-    }
-
-    renderImages(data.hits);
-    lightbox.refresh();
-  } catch (error) {
-    iziToast.error({ title: 'Error', message: error.message });
-  }
-});
-
-loadMoreBtn.addEventListener('click', async () => {
-  page += 1;
-
-  try {
-    const data = await fetchImages(query, page);
-
-    if (data.hits.length === 0 || page * 15 >= totalHits) {
-      iziToast.info({ title: 'End of results', message: "We're sorry, but you've reached the end of search results." });
+    if (data.hits.length < totalHits) {
+      iziToast.info({
+            title: 'End of results',
+            message: "You've reached the end of search results.",
+            position: "topCenter",
+            title: "Info",
+            timeout: 4000, });
       loadMoreBtn.classList.add('is-hidden');
       return;
     }
