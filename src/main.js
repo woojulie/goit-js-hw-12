@@ -23,20 +23,33 @@ form.addEventListener('submit', async (event) => {
   loader.classList.remove('is-hidden');
   
   query = event.currentTarget.elements.user_query.value.trim();
+  if (!query) {
+    iziToast.warning({ title: 'Warning', message: 'Please enter a search query.' });
+    loader.classList.add('is-hidden');
+    return;
+  }
+  
   page = 1;
 
   try {
     const data = await fetchImages(query, page);
     totalHits = data.totalHits;
     
+    if (totalHits === 0) {
+      iziToast.info({ title: 'No results', message: 'No images found. Please try another search.' });
+      loader.classList.add('is-hidden');
+      return;
+    }
+    
     renderImages(data.hits);
     lightbox.refresh();
     
-    if (data.totalHits > 15) {
+    if (totalHits > 15) {
       loadMoreBtn.classList.remove('is-hidden');
     }
   } catch (error) {
     console.error('Error fetching images:', error);
+    iziToast.error({ title: 'Error', message: 'Failed to fetch images. Please try again later.' });
   } finally {
     loader.classList.add('is-hidden');
   }
@@ -51,25 +64,12 @@ loadMoreBtn.addEventListener('click', async () => {
     lightbox.refresh();
     
     const loadedImagesCount = document.querySelectorAll('.gallery-item').length;
-    if (loadedImagesCount >= 15) {
+    if (Math.ceil(totalHits / 15) === page) {
       loadMoreBtn.classList.add('is-hidden');
       iziToast.info({ title: 'End of results', message: "We're sorry, but you've reached the end of search results." });
     }
   } catch (error) {
     console.error('Error loading more images:', error);
+    iziToast.error({ title: 'Error', message: 'Failed to load more images. Please try again later.' });
   }
 });
-
-function createImages(images) {
-  const markup = images
-    .map(
-      ({ webformatURL, largeImageURL, tags }) => `
-        <li class="gallery-item">
-          <a href="${largeImageURL}">
-            <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-          </a>
-        </li>`
-    )
-    .join('');
-  gallery.insertAdjacentHTML('beforeend', markup);
-}
