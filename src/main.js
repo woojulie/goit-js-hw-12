@@ -63,6 +63,11 @@ loadMoreBtn.addEventListener('click', async () => {
     renderImages(data.hits);
     lightbox.refresh();
     
+    const { height: cardHeight } = document.querySelector('.gallery-item').getBoundingClientRect();
+    window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth'
+});
     const loadedImagesCount = document.querySelectorAll('.gallery-item').length;
     if (Math.ceil(totalHits / 15) === page) {
       loadMoreBtn.classList.add('is-hidden');
